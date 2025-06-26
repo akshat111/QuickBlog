@@ -1,6 +1,6 @@
 import fs from "fs";
-import imagekit from "../configs/imageKit";
-import Blog from "../models/Blog";
+import imagekit from "../configs/imageKit.js";
+import Blog from "../models/Blog.js";
 
 export const addBlog = async (req,res)=> {
     try {
@@ -16,7 +16,7 @@ export const addBlog = async (req,res)=> {
         // Upload Image to ImageKits
         const response = await imagekit.upload({
             file : fileBuffer,
-            fileName : imageFile.originalName,
+            fileName : imageFile.originalname,
             folder: "/blogs"
         })
 
