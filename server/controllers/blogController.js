@@ -13,8 +13,7 @@ export const addBlog = async (req,res)=> {
         if(!title || !description || !category || !imageFile){
             return res.json({success: false, message: "Missing field required"})
         }
-        const fileBuffer = imageFile.buffer; // ✅ in-memory buffer
-
+        const fileBuffer = fs.readFileSync(imageFile.path)
 
         // Upload Image to ImageKits
         const response = await imagekit.upload({
