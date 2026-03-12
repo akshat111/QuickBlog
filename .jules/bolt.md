@@ -1,0 +1,3 @@
+## 2024-03-24 - Mongoose Query Parallelization in Admin Dashboard
+**Learning:** `adminController.js` had a performance bottleneck due to four sequential database queries (`Blog.find`, `Blog.countDocuments` x2, `Comment.countDocuments`). Since these queries are completely independent and don't rely on each other's results, awaiting them sequentially significantly increases the response latency of the `getDashboard` endpoint.
+**Action:** When fetching aggregated dashboard data or multiple independent datasets in a controller, always analyze the query dependencies. If the queries don't depend on one another, use `await Promise.all()` to execute them concurrently, reducing total execution time to the duration of the single longest query rather than the sum of all queries.
