@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { blog_data, blogCategories } from "../assets/assets";
-import { motion } from "motion/react";
+import { blogCategories } from "../assets/assets";
+// eslint-disable-next-line no-unused-vars
+import { motion } from "framer-motion";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
 
