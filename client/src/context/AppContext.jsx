@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import axios from 'axios'
 import {useNavigate} from "react-router-dom"
 import toast from "react-hot-toast";
@@ -21,7 +22,7 @@ export const AppProvider = ({children}) =>{
          const {data} = await axios.get('/api/blog/all');
          data.success ? setBlogs(data.blogs) : toast.error(data.message)
         } catch (error) {
-            toast.error(data.message)
+            toast.error(error.message)
         }
     }
 
@@ -34,7 +35,12 @@ export const AppProvider = ({children}) =>{
         }
     },[])
 
-    const value = {axios, navigate, token , setToken , blogs, setBlogs, input, setInput}
+    // Memoize the context value to prevent unnecessary re-renders of consuming components
+    const value = useMemo(
+        () => ({axios, navigate, token, setToken, blogs, setBlogs, input, setInput}),
+        [navigate, token, blogs, input]
+    );
+
     return(
         <AppContext.Provider value={value}>
             {children}
