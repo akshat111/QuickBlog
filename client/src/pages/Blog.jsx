@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { assets, blog_data, comments_data } from "../assets/assets";
+import { assets } from "../assets/assets";
 import Navbar from "../components/Navbar";
 import Moment from "moment";
 import Footer from "../components/Footer";
@@ -19,16 +19,16 @@ const Blog = () => {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
 
-  const fetchBlogData = async () => {
+  const fetchBlogData = useCallback(async () => {
     try {
       const { data } = await axios.get(`/api/blog/${id}`);
       data.success ? setData(data.blog) : toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
     }
-  };
+  }, [axios, id]);
 
-  const fetchComment = async () => {
+  const fetchComment = useCallback(async () => {
     try {
       const { data } = await axios.post("/api/blog/comments", { blogId: id });
       if (data.success) {
@@ -39,7 +39,7 @@ const Blog = () => {
     } catch (error) {
       toast.error(error.message);
     }
-  };
+  }, [axios, id]);
 
   const addComment = async (e) => {
     e.preventDefault();
@@ -64,7 +64,7 @@ const Blog = () => {
   useEffect(() => {
     fetchBlogData();
     fetchComment();
-  }, []);
+  }, [fetchBlogData, fetchComment]);
   return data ? (
     <div className="relative">
       <img

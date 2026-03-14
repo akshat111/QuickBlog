@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { blog_data, blogCategories } from "../assets/assets";
-import { motion } from "motion/react";
+import { blogCategories } from "../assets/assets";
+import { motion as Motion } from "motion/react";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
 
@@ -32,11 +32,11 @@ const BlogList = () => {
             >
               {item}
               {menu === item && (
-                <motion.div
+                <Motion.div
                   layoutId="underline"
                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   className="absolute left-0 right-0 top-0 h-7 -z-1 bg-primary rounded-full"
-                ></motion.div>
+                ></Motion.div>
               )}
             </button>
           </div>
