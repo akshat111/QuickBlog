@@ -1,7 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const BlogCard = ({ blog }) => {
+// ⚡ Bolt Performance Optimization:
+// React.memo prevents unnecessary re-renders when the parent list updates but this specific blog's props haven't changed.
+const BlogCard = React.memo(({ blog }) => {
   const { title, description, category, image, _id } = blog;
   const navigate = useNavigate();
   return (
@@ -9,7 +11,8 @@ const BlogCard = ({ blog }) => {
       onClick={() => navigate(`/blog/${_id}`)}
       className="w-full rounded-lg overflow-hidden shadow hover:scale-102 hover:shadow-primary/25 duration-300 cursor-pointer"
     >
-      <img src={image} alt="" className="aspect-video" />
+      {/* ⚡ Bolt Performance Optimization: Added loading="lazy" for offscreen image deferment */}
+      <img src={image} alt="" loading="lazy" className="aspect-video" />
       <span className="ml-5 mt-4 px-3 py-1 inline-block bg-primary/20 rounded-full text-primary text-xs">
         {category}
       </span>
@@ -22,6 +25,6 @@ const BlogCard = ({ blog }) => {
       </div>
     </div>
   );
-};
+});
 
 export default BlogCard;

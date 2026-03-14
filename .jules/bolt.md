@@ -1,0 +1,3 @@
+## 2024-05-14 - Multiple Array Filter Passes Bottleneck
+**Learning:** In React components that render large lists (like `BlogList.jsx`), chaining multiple array filtering operations (e.g., `blogs.filter().filter()`) and executing them on every re-render can cause significant performance bottlenecks as the list grows, leading to unnecessary iteration overhead.
+**Action:** Always aim to combine filtering criteria into a single pass loop/filter to iterate over the dataset only once. Additionally, wrap such expensive list calculations in `useMemo` so that they only re-run when their actual dependencies (like search inputs or filter categories) change, rather than on every state update.
