@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { assets, dashboard_data } from "../../assets/assets";
+import React, { useEffect, useState, useCallback } from "react";
+import { assets } from "../../assets/assets";
 import BlogTableItem from "../../components/admin/BlogTableItem";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
@@ -14,7 +14,7 @@ const Dashboard = () => {
 
   const { axios } = useAppContext();
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback(async () => {
     try {
       const { data } = await axios.get("/api/admin/dashboard");
       data.success
@@ -23,11 +23,11 @@ const Dashboard = () => {
     } catch (error) {
       toast.error(error.message);
     }
-  };
+  }, [axios]);
 
   useEffect(() => {
     fetchDashboard();
-  }, []);
+  }, [fetchDashboard]);
   return (
     <div className="flex-1 p-4 md:p-10 bg-blue-50/50">
       <div className="flex flex-wrap gap-4">

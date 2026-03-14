@@ -21,7 +21,7 @@ export const AppProvider = ({children}) =>{
          const {data} = await axios.get('/api/blog/all');
          data.success ? setBlogs(data.blogs) : toast.error(data.message)
         } catch (error) {
-            toast.error(data.message)
+            toast.error(error.message)
         }
     }
 
@@ -42,6 +42,7 @@ export const AppProvider = ({children}) =>{
     )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = ()=> {
     return useContext(AppContext)
 }
