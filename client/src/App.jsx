@@ -9,7 +9,7 @@ import ListBlog from "./pages/admin/ListBlog";
 import Comment from "./pages/admin/Comment";
 import Login from "./components/admin/Login";
 import "quill/dist/quill.snow.css";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useAppContext } from "./context/AppContext";
 
 const App = () => {
