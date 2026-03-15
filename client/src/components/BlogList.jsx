@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { blog_data, blogCategories } from "../assets/assets";
+import React, { useState, useMemo } from "react";
+import { blogCategories } from "../assets/assets";
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
@@ -8,16 +8,29 @@ const BlogList = () => {
   const [menu, setMenu] = useState("All");
   const { blogs, input } = useAppContext();
 
-  const filteredBlogs = () => {
-    if (input === "") {
-      return blogs;
-    }
-    return blogs.filter(
-      (blog) =>
-        blog.title.toLowerCase().includes(input.toLowerCase()) ||
-        blog.category.toLowerCase().includes(input.toLowerCase())
-    );
-  };
+  // Performance Optimization: Combine text search and category filter into a single pass
+  // and memoize the result to reduce redundant re-renders and computations on large lists.
+  const filteredBlogs = useMemo(() => {
+    if (!blogs) return [];
+
+    // Cache the lowercase input outside the loop for O(1) string access
+    const searchInput = input ? input.toLowerCase() : "";
+    const isSearchEmpty = searchInput === "";
+
+    return blogs.filter((blog) => {
+      // 1. Check category first (faster check)
+      const matchesCategory = menu === "All" || blog.category === menu;
+      if (!matchesCategory) return false;
+
+      // 2. Then check search text if necessary
+      if (isSearchEmpty) return true;
+
+      return (
+        blog.title.toLowerCase().includes(searchInput) ||
+        blog.category.toLowerCase().includes(searchInput)
+      );
+    });
+  }, [blogs, input, menu]);
 
   return (
     <div>
@@ -43,11 +56,9 @@ const BlogList = () => {
         ))}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40">
-        {filteredBlogs()
-          .filter((blog) => (menu === "All" ? true : blog.category === menu))
-          .map((blog) => (
-            <BlogCard key={blog._id} blog={blog} />
-          ))}
+        {filteredBlogs.map((blog) => (
+          <BlogCard key={blog._id} blog={blog} />
+        ))}
       </div>
     </div>
   );
