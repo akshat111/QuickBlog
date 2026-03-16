@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { blog_data, blogCategories } from "../assets/assets";
+import React, { useState, useMemo } from "react";
+import { blogCategories } from "../assets/assets";
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
@@ -8,16 +8,28 @@ const BlogList = () => {
   const [menu, setMenu] = useState("All");
   const { blogs, input } = useAppContext();
 
-  const filteredBlogs = () => {
-    if (input === "") {
-      return blogs;
-    }
-    return blogs.filter(
-      (blog) =>
-        blog.title.toLowerCase().includes(input.toLowerCase()) ||
-        blog.category.toLowerCase().includes(input.toLowerCase())
-    );
-  };
+  // ⚡ Bolt Optimization:
+  // Combined input search and category filtering into a single pass and wrapped in useMemo.
+  // This reduces re-renders and lowers complexity from O(2N) to O(N) when both filters are active.
+  const filteredBlogs = useMemo(() => {
+    if (!blogs) return [];
+
+    const lowerInput = input.toLowerCase();
+
+    return blogs.filter((blog) => {
+      // 1. Check category filter
+      const categoryMatch = menu === "All" || blog.category === menu;
+      if (!categoryMatch) return false;
+
+      // 2. Check search input
+      if (input === "") return true;
+
+      return (
+        blog.title.toLowerCase().includes(lowerInput) ||
+        blog.category.toLowerCase().includes(lowerInput)
+      );
+    });
+  }, [blogs, input, menu]);
 
   return (
     <div>
@@ -43,11 +55,9 @@ const BlogList = () => {
         ))}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40">
-        {filteredBlogs()
-          .filter((blog) => (menu === "All" ? true : blog.category === menu))
-          .map((blog) => (
-            <BlogCard key={blog._id} blog={blog} />
-          ))}
+        {filteredBlogs.map((blog) => (
+          <BlogCard key={blog._id} blog={blog} />
+        ))}
       </div>
     </div>
   );
