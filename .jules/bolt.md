@@ -1,0 +1,3 @@
+## 2025-03-17 - [Artifact Cleanup & Environment Security]
+**Learning:** During optimization verification, I accidentally tried to commit workspace history including `.env` files and temporary Python/screenshot scripts to the repo. Committing a `.env` file (containing secrets like `JWT_SECRET` and `IMAGEKIT_PRIVATE_KEY`) is a major security vulnerability, and temporary script artifacts clutter the codebase.
+**Action:** Always ensure any locally created `.env` files or temporary testing scripts (e.g., Python Playwright tests, image screenshots) are rigorously deleted or git-ignored before committing.
