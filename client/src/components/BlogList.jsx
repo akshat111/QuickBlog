@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { blog_data, blogCategories } from "../assets/assets";
+import React, { useState, useMemo } from "react";
+import { blogCategories } from "../assets/assets";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
@@ -8,16 +9,32 @@ const BlogList = () => {
   const [menu, setMenu] = useState("All");
   const { blogs, input } = useAppContext();
 
-  const filteredBlogs = () => {
-    if (input === "") {
-      return blogs;
-    }
-    return blogs.filter(
-      (blog) =>
-        blog.title.toLowerCase().includes(input.toLowerCase()) ||
-        blog.category.toLowerCase().includes(input.toLowerCase())
-    );
-  };
+  // ⚡ Bolt Performance Optimization:
+  // - Combine two filter passes (search input and category menu) into a single pass.
+  // - Cache the lowercase search input outside the filter loop to prevent re-computing it on every item.
+  // - Wrap the operation in useMemo so it only recalculates when 'blogs', 'input', or 'menu' change,
+  //   reducing unnecessary overhead on component re-renders.
+  const filteredAndCategorizedBlogs = useMemo(() => {
+    // ⚡ Calculate once per render instead of per item in the array
+    const lowercasedInput = input.trim().toLowerCase();
+
+    return blogs.filter((blog) => {
+      // Pass 1: Category filter
+      if (menu !== "All" && blog.category !== menu) {
+        return false;
+      }
+
+      // Pass 2: Search input filter
+      if (lowercasedInput !== "") {
+        return (
+          blog.title.toLowerCase().includes(lowercasedInput) ||
+          blog.category.toLowerCase().includes(lowercasedInput)
+        );
+      }
+
+      return true;
+    });
+  }, [blogs, input, menu]);
 
   return (
     <div>
@@ -43,11 +60,9 @@ const BlogList = () => {
         ))}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40">
-        {filteredBlogs()
-          .filter((blog) => (menu === "All" ? true : blog.category === menu))
-          .map((blog) => (
-            <BlogCard key={blog._id} blog={blog} />
-          ))}
+        {filteredAndCategorizedBlogs.map((blog) => (
+          <BlogCard key={blog._id} blog={blog} />
+        ))}
       </div>
     </div>
   );
