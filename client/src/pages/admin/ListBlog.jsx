@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { blog_data } from "../../assets/assets";
 import BlogTableItem from "../../components/admin/BlogTableItem";
 import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const ListBlog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -22,6 +22,7 @@ const ListBlog = () => {
 
   useEffect(() => {
     fetchBlogs();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <div className="flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50">
