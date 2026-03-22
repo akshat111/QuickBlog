@@ -1,0 +1,3 @@
+## 2024-05-24 - [Avoid multiple passes on array iterations]
+**Learning:** Found a performance pattern in this codebase where multiple `filter()` calls were chained during each React render loop, and expensive string manipulations like `toLowerCase()` were unnecessarily executed inside the iteration instead of being computed once before.
+**Action:** When working with large datasets in components, use single-pass array iterations via `useMemo` and always extract constants (like query `.toLowerCase()`) outside of loops to prevent redundant allocations and re-renders.
