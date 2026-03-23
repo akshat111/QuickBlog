@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { blog_data, blogCategories } from "../assets/assets";
+import React, { useState, useMemo } from "react";
+import { blogCategories } from "../assets/assets";
+// eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
 import { useAppContext } from "../context/AppContext";
@@ -8,16 +9,33 @@ const BlogList = () => {
   const [menu, setMenu] = useState("All");
   const { blogs, input } = useAppContext();
 
-  const filteredBlogs = () => {
-    if (input === "") {
-      return blogs;
-    }
-    return blogs.filter(
-      (blog) =>
-        blog.title.toLowerCase().includes(input.toLowerCase()) ||
-        blog.category.toLowerCase().includes(input.toLowerCase())
-    );
-  };
+  // ⚡ Bolt Performance Optimization:
+  // Combined input and category filtering into a single pass and wrapped in useMemo
+  // to avoid recalculating the filtered list on every render unless dependencies change.
+  const filteredBlogs = useMemo(() => {
+    if (!blogs) return [];
+
+    const lowerInput = input ? input.toLowerCase() : "";
+
+    return blogs.filter((blog) => {
+      // Filter by category
+      if (menu !== "All" && blog.category !== menu) {
+        return false;
+      }
+
+      // Filter by input
+      if (lowerInput) {
+        if (
+          !blog.title.toLowerCase().includes(lowerInput) &&
+          !blog.category.toLowerCase().includes(lowerInput)
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [blogs, input, menu]);
 
   return (
     <div>
@@ -43,11 +61,9 @@ const BlogList = () => {
         ))}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-24 mx-8 sm:mx-16 xl:mx-40">
-        {filteredBlogs()
-          .filter((blog) => (menu === "All" ? true : blog.category === menu))
-          .map((blog) => (
-            <BlogCard key={blog._id} blog={blog} />
-          ))}
+        {filteredBlogs.map((blog) => (
+          <BlogCard key={blog._id} blog={blog} />
+        ))}
       </div>
     </div>
   );
