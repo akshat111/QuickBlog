@@ -1,5 +1,6 @@
 import React from "react";
 import { assets } from "../assets/assets";
+// eslint-disable-next-line no-unused-vars
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 

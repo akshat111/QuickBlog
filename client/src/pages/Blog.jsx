@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+// eslint-disable-next-line no-unused-vars
 import { assets, blog_data, comments_data } from "../assets/assets";
 import Navbar from "../components/Navbar";
 import Moment from "moment";
@@ -64,6 +65,7 @@ const Blog = () => {
   useEffect(() => {
     fetchBlogData();
     fetchComment();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return data ? (
     <div className="relative">
