@@ -10,20 +10,25 @@ const BlogList = () => {
 
   // Memoize filtered blogs to prevent recalculation on every render
   const filteredBlogs = useMemo(() => {
-    let filtered = blogs;
-    if (input !== "") {
-      filtered = filtered.filter(
-        (blog) =>
-          blog.title.toLowerCase().includes(input.toLowerCase()) ||
-          blog.category.toLowerCase().includes(input.toLowerCase())
-      );
-    }
+    // ⚡ Bolt Performance Optimization:
+    // 1. Cache the lowercase input string outside the loop to avoid redundant conversions
+    // 2. Combine multiple filtering conditions into a single pass (O(n) instead of O(2n))
+    const searchInput = input.toLowerCase();
 
-    if (menu !== "All") {
-      filtered = filtered.filter((blog) => blog.category === menu);
-    }
+    return blogs.filter((blog) => {
+      if (menu !== "All" && blog.category !== menu) {
+        return false;
+      }
 
-    return filtered;
+      if (searchInput !== "") {
+        return (
+          blog.title.toLowerCase().includes(searchInput) ||
+          blog.category.toLowerCase().includes(searchInput)
+        );
+      }
+
+      return true;
+    });
   }, [blogs, input, menu]);
 
   return (
