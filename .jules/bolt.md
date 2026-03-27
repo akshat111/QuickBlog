@@ -1,0 +1,3 @@
+## 2024-03-27 - Backend Performance Optimization: Event Loop Starvation
+**Learning:** Using `fs.readFileSync` for reading uploaded files in an Express controller (like `blogController.js`) starves the Node.js event loop of resources during disk I/O, preventing the server from handling concurrent requests.
+**Action:** Always replace synchronous file I/O operations with asynchronous ones (e.g., `fs.promises.readFile`) in backend controllers to maintain high concurrency and server responsiveness.
