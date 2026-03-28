@@ -13,7 +13,14 @@ export const addBlog = async (req,res)=> {
         if(!title || !description || !category || !imageFile){
             return res.json({success: false, message: "Missing field required"})
         }
-        const fileBuffer = fs.readFileSync(imageFile.path)
+
+        // Performance optimization:
+        // Replaced fs.readFileSync with fs.promises.readFile.
+        // Synchronous file I/O blocks the Node.js event loop, causing other requests
+        // to hang while the disk operation completes. Using asynchronous readFile
+        // prevents event loop starvation and significantly improves throughput,
+        // especially under load with concurrent requests.
+        const fileBuffer = await fs.promises.readFile(imageFile.path)
 
         // Upload Image to ImageKits
         const response = await imagekit.upload({
