@@ -1,0 +1,3 @@
+## 2024-05-24 - Node.js Event Loop Starvation from File Uploads
+**Learning:** Found synchronous disk I/O (`fs.readFileSync`) in the backend file upload path (`addBlog`). Since this app processes potentially large file uploads (images) and depends on the single-threaded Node.js event loop, using `readFileSync` blocks all other concurrent requests while the disk operation completes. This is a severe, codebase-specific performance bottleneck for throughput under load.
+**Action:** Always verify that any file system interaction in request handlers uses asynchronous methods (e.g., `fs.promises.readFile`) to maintain event loop responsiveness.
