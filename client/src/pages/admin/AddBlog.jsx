@@ -62,6 +62,7 @@ const AddBlog = () => {
         toast.success(data.message);
         setImage(null);
         setTitle("");
+        setSubTitle("");
         quillRef.current.root.innerHTML = "";
         setCategory("Startup");
       } else {
