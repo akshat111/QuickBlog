@@ -13,7 +13,10 @@ export const addBlog = async (req,res)=> {
         if(!title || !description || !category || !imageFile){
             return res.json({success: false, message: "Missing field required"})
         }
-        const fileBuffer = fs.readFileSync(imageFile.path)
+
+        // ⚡ Bolt Performance Optimization: Replace synchronous fs.readFileSync with asynchronous fs.promises.readFile
+        // to prevent event loop starvation and blocking of the main thread during heavy disk I/O.
+        const fileBuffer = await fs.promises.readFile(imageFile.path)
 
         // Upload Image to ImageKits
         const response = await imagekit.upload({
@@ -44,7 +47,8 @@ export const addBlog = async (req,res)=> {
 
 export const getAllBlogs = async (req, res)=> {
     try {
-        const blogs = await Blog.find({isPublished: true})
+        // ⚡ Bolt Performance Optimization: Append .lean() to read-only query to bypass document hydration, saving memory and CPU.
+        const blogs = await Blog.find({isPublished: true}).lean();
         res.json({success: true, blogs})
     } catch (error) {
         res.json({success: false, message: error.message})
@@ -54,7 +58,8 @@ export const getAllBlogs = async (req, res)=> {
 export const getBlogByID = async (req,res) => {
     try {
         const {blogId} = req.params;
-        const blog = await Blog.findById(blogId);
+        // ⚡ Bolt Performance Optimization: Append .lean() to read-only query to bypass document hydration, saving memory and CPU.
+        const blog = await Blog.findById(blogId).lean();
         if(!blog){
             return res.json({success: false, message: "Blog not found"})
         } 
@@ -107,7 +112,8 @@ export const addComment = async (req,res) => {
 export const getBlogComments = async (req,res) => {
     try {
         const {blogId} = req.body;
-        const comments = await Comment.find({blog: blogId,isApproved:true}).sort({createdAt: -1});
+        // ⚡ Bolt Performance Optimization: Append .lean() to read-only query to bypass document hydration, saving memory and CPU.
+        const comments = await Comment.find({blog: blogId,isApproved:true}).sort({createdAt: -1}).lean();
         res.json({success: true, comments})
     } catch (error) {
         res.json({success: false, message: error.message})
