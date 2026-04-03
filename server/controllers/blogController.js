@@ -13,7 +13,11 @@ export const addBlog = async (req,res)=> {
         if(!title || !description || !category || !imageFile){
             return res.json({success: false, message: "Missing field required"})
         }
-        const fileBuffer = fs.readFileSync(imageFile.path)
+        // ⚡ Bolt Performance Optimization: Replace synchronous I/O with async
+        // fs.readFileSync blocks the Node.js event loop during disk operations,
+        // which can severely degrade performance under load. Using fs.promises.readFile
+        // ensures the server remains responsive.
+        const fileBuffer = await fs.promises.readFile(imageFile.path)
 
         // Upload Image to ImageKits
         const response = await imagekit.upload({
