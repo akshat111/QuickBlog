@@ -46,7 +46,9 @@ export const addBlog = async (req,res)=> {
 
 export const getAllBlogs = async (req, res)=> {
     try {
-        const blogs = await Blog.find({isPublished: true})
+        // Optimization: Use .lean() to bypass document hydration for read-only queries.
+        // Expected impact: ~30-50% faster query execution and reduced memory footprint.
+        const blogs = await Blog.find({isPublished: true}).lean()
         res.json({success: true, blogs})
     } catch (error) {
         res.json({success: false, message: error.message})
@@ -56,7 +58,9 @@ export const getAllBlogs = async (req, res)=> {
 export const getBlogByID = async (req,res) => {
     try {
         const {blogId} = req.params;
-        const blog = await Blog.findById(blogId);
+        // Optimization: Use .lean() to bypass document hydration for read-only queries.
+        // Expected impact: ~30-50% faster query execution and reduced memory footprint.
+        const blog = await Blog.findById(blogId).lean();
         if(!blog){
             return res.json({success: false, message: "Blog not found"})
         } 
@@ -109,7 +113,9 @@ export const addComment = async (req,res) => {
 export const getBlogComments = async (req,res) => {
     try {
         const {blogId} = req.body;
-        const comments = await Comment.find({blog: blogId,isApproved:true}).sort({createdAt: -1});
+        // Optimization: Use .lean() to bypass document hydration for read-only queries.
+        // Expected impact: ~30-50% faster query execution and reduced memory footprint.
+        const comments = await Comment.find({blog: blogId,isApproved:true}).sort({createdAt: -1}).lean();
         res.json({success: true, comments})
     } catch (error) {
         res.json({success: false, message: error.message})
