@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { assets } from "../../assets/assets";
-import AddBlog from "../../pages/admin/AddBlog";
 
 const Sidebar = () => {
   return (
@@ -8,9 +7,9 @@ const Sidebar = () => {
       <NavLink
         end={true}
         to="/admin"
-        className={(isActive) =>
+        className={({ isActive }) =>
           `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-64 cursor-pointer ${
-            isActive && "bg-primary/10 border-r-4 border-primary"
+            isActive ? "bg-primary/10 border-r-4 border-primary" : ""
           }`
         }
       >
@@ -20,9 +19,9 @@ const Sidebar = () => {
 
       <NavLink
         to="/admin/addBlog"
-        className={(isActive) =>
+        className={({ isActive }) =>
           `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-64 cursor-pointer ${
-            isActive && "bg-primary/10 border-r-4 border-primary"
+            isActive ? "bg-primary/10 border-r-4 border-primary" : ""
           }`
         }
       >
@@ -32,9 +31,9 @@ const Sidebar = () => {
 
       <NavLink
         to="/admin/listBlog"
-        className={(isActive) =>
+        className={({ isActive }) =>
           `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-64 cursor-pointer ${
-            isActive && "bg-primary/10 border-r-4 border-primary"
+            isActive ? "bg-primary/10 border-r-4 border-primary" : ""
           }`
         }
       >
@@ -44,9 +43,9 @@ const Sidebar = () => {
 
       <NavLink
         to="/admin/comment"
-        className={(isActive) =>
+        className={({ isActive }) =>
           `flex items-center gap-3 py-3.5 px-3 md:px-9 md:min-w-64 cursor-pointer ${
-            isActive && "bg-primary/10 border-r-4 border-primary"
+            isActive ? "bg-primary/10 border-r-4 border-primary" : ""
           }`
         }
       >
