@@ -1,3 +1,6 @@
 ## 2024-05-24 - [Avoid synchronous file reading in Express controllers]
 **Learning:** [Using `fs.readFileSync` causes event loop starvation in Express server controllers during disk operations, blocking other concurrent requests.]
 **Action:** [Always replace synchronous file I/O operations with asynchronous methods like `fs.promises.readFile` to prevent event loop starvation and maintain server responsiveness.]
+## 2026-04-11 - [Optimize read-only Mongoose queries with .lean()]
+**Learning:** [Mongoose document hydration creates heavy Mongoose documents. Bypassing this with `.lean()` on read-only endpoints (like `find` or `findById`) significantly improves performance. Verified that frontend components map to `._id` natively, preventing rendering issues when the virtual `.id` getter is stripped.]
+**Action:** [Always use `.lean()` for Mongoose queries that only fetch data to return to the client, but ensure no document mutations or save operations are needed on those instances.]
