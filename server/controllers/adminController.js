@@ -36,10 +36,16 @@ export const getAllComments = async (req,res) => {
 
 export const getDashboard = async (req,res) => {
     try {
-        const recentBlogs = await Blog.find({}).sort({createdAt : -1}).limit(5);
-        const blogs = await Blog.countDocuments();
-        const comments = await Comment.countDocuments()
-        const drafts = await Blog.countDocuments({isPublished: false});
+        // Optimization: Use Promise.all to execute independent database queries concurrently
+        // to prevent waterfall execution, reducing total response time. Added .lean() to
+        // the read-only find query to bypass Mongoose document hydration.
+        // Expected Impact: Reduces total DB query time by executing them in parallel and lowers memory usage.
+        const [recentBlogs, blogs, comments, drafts] = await Promise.all([
+            Blog.find({}).sort({createdAt : -1}).limit(5).lean(),
+            Blog.countDocuments(),
+            Comment.countDocuments(),
+            Blog.countDocuments({isPublished: false})
+        ]);
 
         const dashboardData = {
             blogs, comments, drafts, recentBlogs
