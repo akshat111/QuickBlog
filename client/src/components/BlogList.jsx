@@ -34,7 +34,7 @@ const BlogList = () => {
             <button
               onClick={() => setMenu(item)}
               className={`cursor-pointer text-gray-500 ${
-                menu === item && "text-white px-4 pt-0.5 "
+                menu === item ? "text-white px-4 pt-0.5 " : ""
               }`}
             >
               {item}
