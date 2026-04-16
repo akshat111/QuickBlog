@@ -1,3 +1,6 @@
 ## 2024-05-24 - [Avoid synchronous file reading in Express controllers]
 **Learning:** [Using `fs.readFileSync` causes event loop starvation in Express server controllers during disk operations, blocking other concurrent requests.]
 **Action:** [Always replace synchronous file I/O operations with asynchronous methods like `fs.promises.readFile` to prevent event loop starvation and maintain server responsiveness.]
+## 2026-04-16 - [Concurrent independent database queries]
+**Learning:** [Executing multiple independent database queries sequentially using await causes unnecessary waterfall execution, leading to higher endpoint latency. Additionally, using Mongoose queries without .lean() for read-only data incurs a heavy performance penalty due to document hydration.]
+**Action:** [Always use `Promise.all()` for independent Mongoose queries to execute them concurrently, and append `.lean()` to bypass document hydration when the queried data is read-only and won't be mutated or saved.]
