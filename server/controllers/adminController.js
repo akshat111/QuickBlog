@@ -18,7 +18,8 @@ export const adminLogin = async (req, res)=> {
 
 export const getAllBlogsAdmin = async (req,res) => {
      try {
-        const blogs = await Blog.find({}).sort({createdAt: -1})
+        // Optimization: Use .lean() on read-only queries to bypass document hydration and improve performance
+        const blogs = await Blog.find({}).sort({createdAt: -1}).lean()
          res.json({success: true , blogs})
      } catch (error) {
         res.json({success: false , message: error.message})
@@ -27,7 +28,8 @@ export const getAllBlogsAdmin = async (req,res) => {
 
 export const getAllComments = async (req,res) => {
     try {
-        const comments = await Comment.find({}).populate("blog").sort({createdAt: -1})
+        // Optimization: Use .lean() on read-only queries to bypass document hydration and improve performance
+        const comments = await Comment.find({}).populate("blog").sort({createdAt: -1}).lean()
         res.json({success: true , comments})
     } catch (error) {
         res.json({success: false , message: error.message})
@@ -36,10 +38,13 @@ export const getAllComments = async (req,res) => {
 
 export const getDashboard = async (req,res) => {
     try {
-        const recentBlogs = await Blog.find({}).sort({createdAt : -1}).limit(5);
-        const blogs = await Blog.countDocuments();
-        const comments = await Comment.countDocuments()
-        const drafts = await Blog.countDocuments({isPublished: false});
+        // Optimization: Execute independent database queries concurrently using Promise.all() to prevent waterfall execution
+        const [recentBlogs, blogs, comments, drafts] = await Promise.all([
+            Blog.find({}).sort({createdAt: -1}).limit(5).lean(),
+            Blog.countDocuments(),
+            Comment.countDocuments(),
+            Blog.countDocuments({isPublished: false})
+        ]);
 
         const dashboardData = {
             blogs, comments, drafts, recentBlogs
