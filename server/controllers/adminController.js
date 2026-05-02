@@ -36,10 +36,15 @@ export const getAllComments = async (req,res) => {
 
 export const getDashboard = async (req,res) => {
     try {
-        const recentBlogs = await Blog.find({}).sort({createdAt : -1}).limit(5);
-        const blogs = await Blog.countDocuments();
-        const comments = await Comment.countDocuments()
-        const drafts = await Blog.countDocuments({isPublished: false});
+        // Optimization: Run independent database queries concurrently using Promise.all
+        // to avoid waterfall execution and reduce total response time.
+        // Also use .lean() on recentBlogs to bypass document hydration.
+        const [recentBlogs, blogs, comments, drafts] = await Promise.all([
+            Blog.find({}).sort({createdAt : -1}).limit(5).lean(),
+            Blog.countDocuments(),
+            Comment.countDocuments(),
+            Blog.countDocuments({isPublished: false})
+        ]);
 
         const dashboardData = {
             blogs, comments, drafts, recentBlogs
