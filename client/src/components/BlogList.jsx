@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { blogCategories } from "../assets/assets";
 import { motion } from "motion/react"; // eslint-disable-line no-unused-vars
 import BlogCard from "./BlogCard";

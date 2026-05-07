@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { assets } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 
