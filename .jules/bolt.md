@@ -1,3 +1,5 @@
 ## 2024-05-24 - [Avoid synchronous file reading in Express controllers]
 **Learning:** [Using `fs.readFileSync` causes event loop starvation in Express server controllers during disk operations, blocking other concurrent requests.]
-**Action:** [Always replace synchronous file I/O operations with asynchronous methods like `fs.promises.readFile` to prevent event loop starvation and maintain server responsiveness.]
+**Action:** [Always replace synchronous file I/O operations with asynchronous methods like `fs.promises.readFile` to prevent event loop starvation and maintain server responsiveness.]## 2024-05-25 - [Use Promise.all for independent queries]
+**Learning:** [Using sequential `await` calls for independent database queries creates a waterfall effect that unnecessarily increases total response time.]
+**Action:** [Always use `Promise.all()` to execute sequential independent queries (e.g., aggregations or lookups) concurrently to reduce latency and improve performance.]
