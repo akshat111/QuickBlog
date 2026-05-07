@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import BlogTableItem from "../../components/admin/BlogTableItem";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
